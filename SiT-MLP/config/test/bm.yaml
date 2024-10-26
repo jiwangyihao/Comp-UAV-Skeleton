@@ -1,0 +1,50 @@
+# feeder
+feeder: feeders.feeder_uav.Feeder
+train_feeder_args:
+  data_path: data/uav/train_bone_motion.npy
+  label_path: data/uav/train_label.npy
+  split: train
+  debug: False
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: 64
+  normalization: False
+  random_rot: True
+  p_interval: [0.5, 1]
+  vel: False
+  bone: False
+
+test_feeder_args:
+  data_path: data/uav/B/test_bone_motion.npy
+  label_path: data/uav/B/test_label.npy
+  split: test
+  window_size: 64
+  p_interval: [0.95]
+  vel: False
+  bone: False
+  debug: False
+
+
+# model
+model: model.mlp.Model
+model_args:
+  num_class: 155
+  num_point: 17
+  num_person: 2
+  graph: graph.uav.Graph
+  k: 1
+
+#optim
+weight_decay: 0.0001
+base_lr: 0.1
+# lr_decay_rate: 0.1
+# step: [50]
+
+# training
+device: 0
+batch_size: 160
+test_batch_size: 160
+num_epoch: 90
+nesterov: True
+warm_up_epoch: 5

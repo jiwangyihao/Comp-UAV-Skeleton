@@ -1,0 +1,6 @@
+/*/data/
+/*/results/
+/*/work_dir/
+__pycache__
+*.log
+pred.npy
