@@ -30,30 +30,22 @@ if __name__ == "__main__":
     models = [
         "Skeleton-MixFormer/work_dir/uav/skmixf_b",
         "Skeleton-MixFormer/work_dir/uav/skmixf_j",
-        "Skeleton-MixFormer/work_dir/uav/skmixf_bm",
-        "Skeleton-MixFormer/work_dir/uav/skmixf_jm",
         "FR-Head/results/uav/b",
         "FR-Head/results/uav/j",
-        "FR-Head/results/uav/bm",
-        "FR-Head/results/uav/jm",
         "SiT-MLP/work_dir/uav/j",
         "SiT-MLP/work_dir/uav/b",
-        "SiT-MLP/work_dir/uav/jm",
-        "SiT-MLP/work_dir/uav/bm"
+        "BlockGCN/work_dir/uav/j",
+        "BlockGCN/work_dir/uav/b"
     ]
     tests = [
         "Skeleton-MixFormer/work_dir/test/test_b",
         "Skeleton-MixFormer/work_dir/test/test_j",
-        "Skeleton-MixFormer/work_dir/test/test_bm",
-        "Skeleton-MixFormer/work_dir/test/test_jm",
         "FR-Head/results/test/test_b",
         "FR-Head/results/test/test_j",
-        "FR-Head/results/test/test_bm",
-        "FR-Head/results/test/test_jm",
         "SiT-MLP/work_dir/test/test_j",
         "SiT-MLP/work_dir/test/test_b",
-        "SiT-MLP/work_dir/test/test_jm",
-        "SiT-MLP/work_dir/test/test_bm"
+        "BlockGCN/work_dir/test/test_j",
+        "BlockGCN/work_dir/test/test_b"
     ]
 
     results = []

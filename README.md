@@ -1,6 +1,6 @@
 ### 简要介绍
 
-本项目主要基于 [Skeleton-MixFormer](https://github.com/ElricXin/Skeleton-MixFormer)、[FR-Head](https://github.com/zhysora/FR-Head) 和 [SiT-MLP](https://github.com/zhshj0110/SiT-MLP)，针对 [UAV-Human](https://github.com/sutdcv/UAV-Human) 数据集进行了一定修改。使用两类模型分别进行不同模态数据的训练，随后在 `TestA` 数据集上使用 `ensemble` 方法优化多模型的组合权重，得到最终预测结果。
+本项目主要基于 [Skeleton-MixFormer](https://github.com/ElricXin/Skeleton-MixFormer)、[FR-Head](https://github.com/zhysora/FR-Head)、[SiT-MLP](https://github.com/zhshj0110/SiT-MLP) 和 [BlockGCN](https://github.com/ZhouYuxuanYX/BlockGCN)，针对 [UAV-Human](https://github.com/sutdcv/UAV-Human) 数据集进行了一定修改。使用四类模型分别进行不同模态数据的训练，随后在 `TestA` 数据集上使用 `ensemble` 方法优化多模型的组合权重，得到最终预测结果。
 
 带有完整训练日志、预处理数据及训练权重的版本可以在百度网盘中获取：
 
@@ -9,6 +9,14 @@
 链接:https://pan.baidu.com/s/1nCUcWishGpPUDstENiwZAA?pwd=8m7r 
 提取码:8m7r
 复制这段内容打开「百度网盘APP 即可获取」
+```
+
+123云盘备用链接：
+
+```
+https://www.123684.com/s/y9W8Vv-we4Nv 提取码:P1pl
+or
+https://www.123865.com/s/y9W8Vv-we4Nv 提取码:P1pl
 ```
 
 ### 环境配置
@@ -25,7 +33,7 @@ conda env create -f environment.yaml
 
 使用 `gen_modal` 为 `Train` `TestA` `TestB` 生成多模态数据（需要使用 `joint` `bone` 两个模态）。
 
-将处理后的数据分别置于 `Skeleton-MixFormer/data` 和 `FR-Head/data` 中，两者内容完全相同，结构如下：
+将处理后的数据分别置于 `Skeleton-MixFormer/data`、`FR-Head/data`、`SiT-MLP/data` 和 `BlockGCN/data` 中，这几个路径中的内容完全相同，结构如下：
 
 ```
 - data/
@@ -42,7 +50,7 @@ conda env create -f environment.yaml
 
 ### 模型训练
 
-[Skeleton-MixFormer](https://github.com/ElricXin/Skeleton-MixFormer)、[FR-Head](https://github.com/zhysora/FR-Head) 和 [SiT-MLP](https://github.com/zhshj0110/SiT-MLP) 这三类模型需要分别训练。
+[Skeleton-MixFormer](https://github.com/ElricXin/Skeleton-MixFormer)、[FR-Head](https://github.com/zhysora/FR-Head)、[SiT-MLP](https://github.com/zhshj0110/SiT-MLP) 和 [BlockGCN](https://github.com/ZhouYuxuanYX/BlockGCN) 这四类模型需要分别训练。
 
 #### Skeleton-MixFormer
 
@@ -55,10 +63,6 @@ conda env create -f environment.yaml
   python main.py --config config/uav/j.yaml --work-dir work_dir/uav/skmixf_j --device 0
   # 示例：训练 bone 模态
   python main.py --config config/uav/b.yaml --work-dir work_dir/uav/skmixf_b --device 0
-  # 示例：训练 joint-motion 模态
-  python main.py --config config/uav/jm.yaml --work-dir work_dir/uav/skmixf_jm --device 0
-  # 示例：训练 bone-motion 模态
-  python main.py --config config/uav/bm.yaml --work-dir work_dir/uav/skmixf_bm --device 0
   ```
   
   **注意：**可能需要修改配置文件中的训练参数来适配训练设备的具体情况
@@ -74,10 +78,6 @@ conda env create -f environment.yaml
   python main.py --config config/uav/j.yaml --work-dir results/uav/j --cl-mode ST-Multi-Level --w-multi-cl-loss 0.1 0.2 0.5 1 --device 0
   # 示例：训练 bone 模态
   python main.py --config config/uav/b.yaml --work-dir results/uav/b --cl-mode ST-Multi-Level --w-multi-cl-loss 0.1 0.2 0.5 1 --device 0
-  # 示例：训练 joint-motion 模态
-  python main.py --config config/uav/j.yaml --work-dir results/uav/jm --cl-mode ST-Multi-Level --w-multi-cl-loss 0.1 0.2 0.5 1 --device 0
-  # 示例：训练 bone-motion 模态
-  python main.py --config config/uav/b.yaml --work-dir results/uav/bm --cl-mode ST-Multi-Level --w-multi-cl-loss 0.1 0.2 0.5 1 --device 0
   ```
   
   **注意：**可能需要修改配置文件中的训练参数来适配训练设备的具体情况
@@ -93,23 +93,34 @@ conda env create -f environment.yaml
   python main.py --config config/uav/j.yaml --work-dir work_dir/uav/j --device 0
   # 示例：训练 bone 模态
   python main.py --config config/uav/b.yaml --work-dir work_dir/uav/b --device 0
-  # 示例：训练 joint-motion 模态
-  python main.py --config config/uav/jm.yaml --work-dir work_dir/uav/jm --device 0
-  # 示例：训练 bone-motion 模态
-  python main.py --config config/uav/bm.yaml --work-dir work_dir/uav/bm --device 0
+  ```
+  
+  **注意：**可能需要修改配置文件中的训练参数来适配训练设备的具体情况
+
+#### BlockGCN
+
+- 进入 `BlockGCN` 目录
+
+- 运行下面代码
+
+  ```bash
+  # 示例：训练 joint 模态
+  python main.py --config config/uav/j.yaml --work-dir work_dir/uav/j --device 0
+  # 示例：训练 bone 模态
+  python main.py --config config/uav/b.yaml --work-dir work_dir/uav/b --device 0
   ```
 
   **注意：**可能需要修改配置文件中的训练参数来适配训练设备的具体情况
 
 在训练过程中会自动输出模型在 `TestA` 上的测试结果。
 
-在压缩文件的 `Skeleton-MixFormer/work_dir/uav/`、`FR-Head/results/uav/` 和 `SiT-MLP/results/uav` 这三个路径下存放有预先训练的结果及各轮的权重。其中，训练日志在各文件夹下的 `log.txt` 文件中。
+在压缩文件的 `Skeleton-MixFormer/work_dir/uav/`、`FR-Head/results/uav/`、`SiT-MLP/results/uav` 和 `BlockGCN/results/uav` 这四个路径下存放有预先训练的结果及各轮的权重。其中，训练日志在各文件夹下的 `log.txt` 文件中。
 
 ### 生成预测
 
 出于方便考虑，本项目并没有直接实现多模型的组合推理，而选择了先完成各个模型的推理，再将模型的推理结果组合起来的方案。
 
-[Skeleton-MixFormer](https://github.com/ElricXin/Skeleton-MixFormer)、[FR-Head](https://github.com/zhysora/FR-Head) 和 [SiT-MLP](https://github.com/zhshj0110/SiT-MLP) 这三类模型生成预测的方法是相同的，示例如下（在`Skeleton-MixFormer` 和 `FR-Head` 目录下执行）：
+[Skeleton-MixFormer](https://github.com/ElricXin/Skeleton-MixFormer)、[FR-Head](https://github.com/zhysora/FR-Head)、[SiT-MLP](https://github.com/zhshj0110/SiT-MLP) 和 [BlockGCN](https://github.com/ZhouYuxuanYX/BlockGCN) 这四类模型生成预测的方法是相同的，示例如下（在`Skeleton-MixFormer`、`FR-Head`、`SiT-MLP` 和 `BlockGCN` 目录下执行，需要的配置文件在 `Model_Type/config/test` 中，可依据实际情况修改）：
 
 ```bash
 python main.py --config <config_dir>/test/<config.yaml> --work-dir <work_dir> --phase test --save-score True --weights <work_dir>/xxx.pt --device 0
@@ -117,7 +128,7 @@ python main.py --config <config_dir>/test/<config.yaml> --work-dir <work_dir> --
 
 具体来说，对于每个模型，我们选择训练过程中在 `TestA` 上准确度最高的一轮训练结果进行预测。
 
-在压缩文件的 `Skeleton-MixFormer/work_dir/test/`、`FR-Head/results/test/` 和 `SiT-MLP/work_dir/test` 这三个路径下存放有我们的训练的模型生成的原始预测结果。
+在压缩文件的 `Skeleton-MixFormer/work_dir/test/`、`FR-Head/results/test/`、`SiT-MLP/work_dir/test` 和 `BlockGCN/work_dir/test` 这四个路径下存放有我们的训练的模型生成的原始预测结果。
 
 ### `ensemble` 得到最终预测结果
 
@@ -131,30 +142,22 @@ label = np.load('./Skeleton-MixFormer/data/uav/test_label.npy')
 models = [
     "Skeleton-MixFormer/work_dir/uav/skmixf_b",
     "Skeleton-MixFormer/work_dir/uav/skmixf_j",
-    "Skeleton-MixFormer/work_dir/uav/skmixf_bm",
-    "Skeleton-MixFormer/work_dir/uav/skmixf_jm",
     "FR-Head/results/uav/b",
     "FR-Head/results/uav/j",
-    "FR-Head/results/uav/bm",
-    "FR-Head/results/uav/jm",
     "SiT-MLP/work_dir/uav/j",
     "SiT-MLP/work_dir/uav/b",
-    "SiT-MLP/work_dir/uav/jm",
-    "SiT-MLP/work_dir/uav/bm"
+    "BlockGCN/work_dir/uav/j",
+    "BlockGCN/work_dir/uav/b"
 ]
 tests = [
     "Skeleton-MixFormer/work_dir/test/test_b",
     "Skeleton-MixFormer/work_dir/test/test_j",
-    "Skeleton-MixFormer/work_dir/test/test_bm",
-    "Skeleton-MixFormer/work_dir/test/test_jm",
     "FR-Head/results/test/test_b",
     "FR-Head/results/test/test_j",
-    "FR-Head/results/test/test_bm",
-    "FR-Head/results/test/test_jm",
     "SiT-MLP/work_dir/test/test_j",
     "SiT-MLP/work_dir/test/test_b",
-    "SiT-MLP/work_dir/test/test_jm",
-    "SiT-MLP/work_dir/test/test_bm"
+    "BlockGCN/work_dir/test/test_j",
+    "BlockGCN/work_dir/test/test_b"
 ]
 ```
 
